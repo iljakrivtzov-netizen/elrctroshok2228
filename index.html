@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroShock — Интернет-магазин электроники</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0071e3;
+            --primary-hover: #0077ed;
+            --bg: #f5f5f7;
+            --card-bg: #ffffff;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+            --danger: #ff3b30;
+            --success: #34c759;
+            --warning: #ff9500;
+            --border-radius: 16px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.10);
+            --shadow-lg: 0 16px 50px rgba(0,0,0,0.14);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --navbar-height: 64px;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            background: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, 'Comic Sans MS', Roboto, 'Calibri', Arial, sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: var(--navbar-height);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.88) !important;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: var(--shadow-sm);
+            height: var(--navbar-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            padding: 0;
+        }
+        .navbar .container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text) !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar-brand .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        .search-wrapper input {
+            width: 100%;
+            border-radius: 24px;
+            border: 1.5px solid #e5e5ea;
+            padding: 10px 44px 10px 18px;
+            font-size: 0.95rem;
+            background: #f9f9fb;
+            transition: var(--transition);
+            outline: none;
+        }
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0,113,227,0.12);
+        }
+        .search-results {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1060;
+            display: none;
+        }
+        .search-results.active { display: block; }
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+        }
+        .search-result-item:hover { background: #f5f5f7; }
+        .search-result-item img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+        .search-result-item .name { font-size: 0.9rem; font-weight: 500; }
+        .search-result-item .price { font-weight: 700; font-size: 0.95rem; color: var(--primary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-nav {
+            background: #f5f5f7;
+            border: none;
+            border-radius: 24px;
+            padding: 9px 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            text-decoration: none;
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-nav:hover { background: #e8e8ed; }
+        .btn-nav .badge-counter {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--danger);
+            color: #fff;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 22px;
+            text-align: center;
+        }
+        .btn-primary-nav {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 9px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-primary-nav:hover { background: var(--primary-hover); }
+
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            border-radius: 24px;
+            padding: 60px 40px;
+            margin: 24px 0 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -15%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(118,75,162,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero h1 { font-size: 2.6rem; font-weight: 800; position: relative; z-index: 1; }
+        .hero p { font-size: 1.15rem; opacity: 0.85; position: relative; z-index: 1; }
+        .hero .btn-light { border-radius: 28px; padding: 12px 36px; font-weight: 600; position: relative; z-index: 1; }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+            margin-bottom: 40px;
+        }
+        .category-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1.5px solid transparent;
+        }
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        .category-card .icon { font-size: 2.2rem; margin-bottom: 8px; display: block; }
+        .category-card .label { font-size: 0.85rem; font-weight: 600; }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .product-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            border: 1.5px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: #d2d2d7;
+        }
+        .product-card .image-wrap {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            padding: 20px;
+            position: relative;
+        }
+        .product-card .image-wrap img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+        .product-card:hover .image-wrap img { transform: scale(1.04); }
+        .discount-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: var(--danger);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            z-index: 2;
+            letter-spacing: -0.2px;
+        }
+        .product-card .info {
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .product-card .brand { font-size: 0.78rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .product-card .name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.35;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text);
+        }
+        .product-card .pricing { margin-top: auto; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+        .product-card .current-price { font-size: 1.35rem; font-weight: 800; color: var(--text); }
+        .product-card .old-price { font-size: 0.88rem; color: #b0b0b0; text-decoration: line-through; }
+        .product-card .btn-add {
+            width: 100%;
+            margin-top: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 10px 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .product-card .btn-add:hover { background: var(--primary-hover); }
+        .product-card .btn-add:active { transform: scale(0.96); }
+
+        .catalog-layout { display: flex; gap: 28px; }
+        .filter-sidebar {
+            width: 270px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: calc(var(--navbar-height) + 20px);
+            max-height: calc(100vh - var(--navbar-height) - 40px);
+            overflow-y: auto;
+            align-self: flex-start;
+        }
+        .filter-sidebar h5 { font-weight: 700; margin-bottom: 18px; font-size: 1.05rem; }
+        .filter-group { margin-bottom: 18px; }
+        .filter-group label { font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; display: block; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            border-radius: 10px;
+            border: 1.5px solid #e5e5ea;
+            padding: 9px 12px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            outline: none;
+            background: #f9f9fb;
+        }
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+            background: #fff;
+        }
+        .filter-group .price-inputs { display: flex; gap: 8px; }
+        .filter-group .price-inputs input { width: 50%; }
+        .btn-reset {
+            width: 100%;
+            background: #f5f5f7;
+            border: none;
+            border-radius: 12px;
+            padding: 10px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-reset:hover { background: #e8e8ed; }
+        .catalog-content { flex: 1; min-width: 0; }
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .catalog-header .count { color: var(--text-secondary); font-size: 0.9rem; }
+        .catalog-header select {
+            border-radius: 10px;
+            border: 1.5px solid #e5e5ea;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            background: #fff;
+        }
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 36px;
+            box-shadow: var(--shadow-sm);
+        }
+        .product-detail .gallery { display: flex; align-items: center; justify-content: center; }
+        .product-detail .gallery img { max-width: 100%; max-height: 420px; object-fit: contain; }
+        .product-detail h1 { font-size: 1.8rem; font-weight: 700; }
+        .product-detail .brand-detail { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 12px; }
+        .product-detail .price-detail { font-size: 2rem; font-weight: 800; }
+        .product-detail .old-price-detail { font-size: 1.1rem; color: #b0b0b0; text-decoration: line-through; margin-left: 10px; }
+        .product-detail .stock-status { font-weight: 500; margin: 10px 0; }
+        .product-detail .stock-status.in-stock { color: var(--success); }
+        .product-detail .stock-status.out-of-stock { color: var(--danger); }
+        .btn-add-lg {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 28px;
+            padding: 14px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-add-lg:hover { background: var(--primary-hover); }
+        .btn-add-lg:disabled { background: #c7c7cc; cursor: not-allowed; }
+        .tabs { display: flex; gap: 0; margin-top: 30px; border-bottom: 2px solid #e5e5ea; }
+        .tabs button {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { background: var(--card-bg); border-radius: 0 0 16px 16px; padding: 24px; box-shadow: var(--shadow-sm); }
+        .specs-table { width: 100%; }
+        .specs-table td { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; }
+        .specs-table td:first-child { color: var(--text-secondary); font-weight: 500; width: 40%; }
+        .specs-table td:last-child { font-weight: 500; }
+
+        .cart-item {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        .cart-item:hover { box-shadow: var(--shadow-md); }
+        .cart-item img { width: 80px; height: 80px; object-fit: contain; border-radius: 10px; background: #fafafa; }
+        .cart-item .item-info { flex: 1; }
+        .cart-item .item-name { font-weight: 600; margin-bottom: 4px; }
+        .cart-item .item-price { color: var(--text-secondary); font-size: 0.9rem; }
+        .qty-control { display: flex; align-items: center; gap: 8px; }
+        .qty-control button {
+            width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid #e5e5ea;
+            background: #fff; cursor: pointer; font-size: 1.1rem; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; transition: var(--transition);
+        }
+        .qty-control button:hover { background: #f5f5f7; }
+        .qty-control span { font-weight: 700; min-width: 28px; text-align: center; }
+        .item-total { font-weight: 800; font-size: 1.1rem; min-width: 100px; text-align: right; }
+        .btn-remove {
+            background: none; border: none; color: #c7c7cc; font-size: 1.2rem; cursor: pointer;
+            transition: var(--transition); padding: 4px 8px;
+        }
+        .btn-remove:hover { color: var(--danger); }
+        .cart-summary {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px 28px;
+            text-align: right;
+            box-shadow: var(--shadow-sm);
+            margin-top: 16px;
+        }
+        .cart-summary h3 { font-weight: 800; }
+        .cart-summary .total-price { font-size: 1.8rem; color: var(--primary); }
+
+        .order-form {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .order-form label { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; display: block; }
+        .order-form input,
+        .order-form select,
+        .order-form textarea {
+            width: 100%;
+            border-radius: 12px;
+            border: 1.5px solid #e5e5ea;
+            padding: 11px 14px;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            transition: var(--transition);
+            outline: none;
+            background: #f9f9fb;
+        }
+        .order-form input:focus,
+        .order-form select:focus,
+        .order-form textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+            background: #fff;
+        }
+        .btn-submit-order {
+            width: 100%;
+            background: var(--success);
+            color: #fff;
+            border: none;
+            border-radius: 28px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-submit-order:hover { background: #2db84d; }
+
+        .admin-table { background: var(--card-bg); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .admin-table table { width: 100%; border-collapse: collapse; }
+        .admin-table th { background: #f9f9fb; padding: 14px 16px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); text-align: left; }
+        .admin-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-shipped { background: #d4edda; color: #155724; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.45); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-dialog {
+            background: #fff; border-radius: 24px; padding: 32px;
+            width: 100%; max-width: 440px; box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-dialog h3 { font-weight: 700; margin-bottom: 20px; text-align: center; }
+        .modal-dialog input {
+            width: 100%; border-radius: 12px; border: 1.5px solid #e5e5ea;
+            padding: 11px 14px; font-size: 0.95rem; margin-bottom: 12px;
+            outline: none; transition: var(--transition); background: #f9f9fb;
+        }
+        .modal-dialog input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,113,227,0.1); background: #fff; }
+        .btn-full {
+            width: 100%; border-radius: 28px; padding: 12px; font-weight: 700;
+            font-size: 0.95rem; border: none; cursor: pointer; transition: var(--transition);
+        }
+        .btn-full.primary { background: var(--primary); color: #fff; }
+        .btn-full.primary:hover { background: var(--primary-hover); }
+
+        footer {
+            background: #1a1a2e;
+            color: #aaa;
+            padding: 40px 0 24px;
+            margin-top: 60px;
+        }
+        footer a { color: #aaa; text-decoration: none; transition: var(--transition); }
+        footer a:hover { color: #fff; }
+
+        @media (max-width: 1200px) {
+            .product-grid { grid-template-columns: repeat(3, 1fr); }
+            .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 992px) {
+            .product-detail { grid-template-columns: 1fr; }
+            .catalog-layout { flex-direction: column; }
+            .filter-sidebar { position: static; width: 100%; max-height: none; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .catalog-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .hero { padding: 40px 20px; }
+            .hero h1 { font-size: 1.8rem; }
+            .search-wrapper { max-width: 100%; }
+            .product-card .image-wrap { height: 160px; padding: 12px; }
+            .product-card .name { font-size: 0.82rem; }
+            .product-card .current-price { font-size: 1.1rem; }
+        }
+        @media (max-width: 576px) {
+            .product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .catalog-grid { grid-template-columns: 1fr; }
+            .cart-item { flex-wrap: wrap; }
+            .cart-item img { width: 60px; height: 60px; }
+            .product-detail { padding: 20px; }
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1d1d1f;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 28px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 3000;
+            animation: fadeInOut 2.5s ease forwards;
+            box-shadow: var(--shadow-lg);
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            15% { opacity: 1; transform: translateY(0); }
+            75% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useContext, createContext, useCallback, useRef, useMemo } = React;
+
+const INITIAL_PRODUCTS = [
+    { id: 1, name: "Apple iPhone 15 Pro Max 256GB", slug: "iphone-15-pro-max-256", description: "Флагманский смартфон Apple с титановым корпусом, процессором A17 Pro и передовой системой камер. Идеальный выбор для требовательных пользователей.", price: 149990, old_price: 169990, stock: 25, category_id: 2, brand: "Apple", main_image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS5vxhEvNHCIG_h14cwjXuSPTfjopFtsDIKg&s", is_featured: true },
+    { id: 2, name: "Samsung Galaxy S24 Ultra 512GB", slug: "samsung-galaxy-s24-ultra", description: "Смартфон с передовым искусственным интеллектом Galaxy AI, стилусом S Pen и камерой 200 МП.", price: 139990, old_price: null, stock: 18, category_id: 2, brand: "Samsung", main_image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSndpPGSsFYTJv7INpju8rP3nuFc6gWjX-xBg&s", is_featured: true },
+    { id: 3, name: "MacBook Pro 16\" M3 Pro 18GB/512GB", slug: "macbook-pro-16-m3-pro", description: "Мощный ноутбук для профессионалов с чипом M3 Pro, 18 ГБ объединенной памяти и потрясающим дисплеем Liquid Retina XDR.", price: 249990, old_price: 279990, stock: 10, category_id: 5, brand: "Apple", main_image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmf4iT3c1wlDjV92pp0bk3E48GplAK_tykdA&s", is_featured: true },
+    { id: 4, name: "Lenovo ThinkPad X1 Carbon Gen 11", slug: "lenovo-thinkpad-x1-carbon", description: "Ультралегкий бизнес-ноутбук с процессором Intel Core i7 13-го поколения, 16 ГБ ОЗУ и защищенным корпусом.", price: 159990, old_price: null, stock: 7, category_id: 5, brand: "Lenovo", main_image: "https://cdn.xcomweb.ru/upload/pictures/d28/cmu9pbc6x1zls7mxacx40f5var4cp0vo/f8+75VmyCPmln_600", is_featured: false },
+    { id: 5, name: "Sony WH-1000XM5", slug: "sony-wh-1000xm5", description: "Беспроводные наушники с лучшим в классе шумоподавлением, 30 часами работы и кристально чистым звуком.", price: 34990, old_price: 39990, stock: 40, category_id: 8, brand: "Sony", main_image: "https://avatars.mds.yandex.net/get-mpic/16055235/2a000001994d5e4faabaa6c59311cc1e5d82/orig", is_featured: true },
+    { id: 6, name: "Xiaomi 14 Pro 512GB", slug: "xiaomi-14-pro", description: "Флагманский смартфон с процессором Snapdragon 8 Gen 3, камерой Leica и быстрой зарядкой 120 Вт.", price: 89990, old_price: null, stock: 30, category_id: 2, brand: "Xiaomi", main_image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJOH3mpPbAkUSMGA-EZNkrhUGlbGkCaDkDUg&s", is_featured: false },
+    { id: 7, name: "Samsung Galaxy Tab S9 Ultra", slug: "samsung-galaxy-tab-s9-ultra", description: "Премиальный планшет с Dynamic AMOLED 2X дисплеем 14.6\", процессором Snapdragon 8 Gen 2 и водонепроницаемым корпусом.", price: 109990, old_price: 119990, stock: 12, category_id: 3, brand: "Samsung", main_image: "https://yandex-images.clstorage.net/tKI9L8356/d4b9e8VxvEBs/X-9seq3BPSXIZyJnf__0oukyJMH8qUatUfF9atm-w6vIq4nacpeZMgwv-Se3qhi9ZYmbtBQWgvM-gLg1xehkKEpr3aqc9Gwg7NNzl5qOlVZd11QAvt5UXxKWf-mqaGHoKautzyfTWJYIWZ_nQBi_eSO9vtOypSCh2Xf9l9Fts73I2yhqjCN_BMg0dlbNHAMx2BPVoZ29RS9Q5O-IeHpg-DhYL7xXMK41q1suwaL6XToSDdwB4IQAQ7imzrZgXgJcyCkqCP4zn8R4JORm7z1DUCpi1-MuruZuksW8aQv4s5joKy-8xTBdd3v4_VLSSn-Ycl0fgeIUgHELtVyXQE5RzdsLixpOUH93a8al1pwuotJ7M2WSrczmjnGXXXia2jJ42PreLPdhvRVr-I-QQds8-3Dtr4KjtcIzqtWfBFOOkc8aOTqZ3QButpv1RASv_eAw6oD0Aq2cl8wQNVxrKHsxKrrrjYwmgp93-Iv_gOJoTevzHr5wcbaBEFvGvKaB_RJdyKmKqDzD3-dYJwalbS3hI5vzRsEcvfccQnUfaen6swmIC8-eZwO_9CurbLFSer2KQ7we8bOmUHGJhK42sd1yP1pZWtpccV8l-NW39bw84TH6IBehDA-1fYKF_wj7qPBL2Kuf3cbg_UVIiq5B4HmOOOJuzPNR5tAze7e8JoJsg5-oavnKDuE_JXmWhwb_DKMySaCVsy0eBO9TlTwYemii2Whav_4Uo_yEibi_gMGKrUlSDQxRcXYic8rFPzeDnVHsCPurqmxTfse5hNZm7K3g4vuxZcGdjPbPwCdvi7po0nqqWs3fpKDv9KiI7sOwGq7Zwvz8oWKGwcPbtp90ck8QzXlZOuv9AGwUi6b0Z-1vQAHbMJYjP4-0PKDX30rampFaOQotDGbSTvfqGR8wIGlMm-INDnOytDCQqoTfV1C8I8w7KzsoTbMfFLsGBdbu7OPTyCJXgRw8pFxChV14E", is_featured: false },
+    { id: 8, name: "ASUS ROG Strix G16", slug: "asus-rog-strix-g16", description: "Игровой ноутбук с Intel Core i9-13980HX, RTX 4070, 32 ГБ ОЗУ и дисплеем 240 Гц для максимальной производительности в играх.", price: 189990, old_price: null, stock: 5, category_id: 5, brand: "ASUS", main_image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQziZ5emHBIDRy-IbhmzbY1oUcCHNFg0GS3mg&s", is_featured: false },
+];
+
+const CATEGORIES = [
+    { id: 1, name: "Смартфоны и гаджеты", slug: "smartfony-i-gadzhety", parent_id: null, icon: "📱" },
+    { id: 2, name: "Смартфоны", slug: "smartfony", parent_id: 1, icon: "📱" },
+    { id: 3, name: "Планшеты", slug: "planshety", parent_id: 1, icon: "📋" },
+    { id: 4, name: "Ноутбуки и компьютеры", slug: "noutbuki-i-kompyutery", parent_id: null, icon: "💻" },
+    { id: 5, name: "Ноутбуки", slug: "noutbuki", parent_id: 4, icon: "💻" },
+    { id: 6, name: "Мониторы", slug: "monitory", parent_id: 4, icon: "🖥️" },
+    { id: 7, name: "Аудиотехника", slug: "audiotehnika", parent_id: null, icon: "🔊" },
+    { id: 8, name: "Наушники", slug: "naushniki", parent_id: 7, icon: "🎧" },
+];
+
+const ATTRIBUTES = {
+    2: [{ id: 1, name: "Диагональ экрана", unit: "дюймов" }, { id: 2, name: "Объем памяти", unit: "ГБ" }, { id: 3, name: "Объем ОЗУ", unit: "ГБ" }, { id: 4, name: "Разрешение камеры", unit: "МП" }, { id: 5, name: "Емкость аккумулятора", unit: "мАч" }],
+    5: [{ id: 6, name: "Диагональ экрана", unit: "дюймов" }, { id: 7, name: "Процессор", unit: "" }, { id: 8, name: "Объем ОЗУ", unit: "ГБ" }, { id: 9, name: "Тип накопителя", unit: "" }, { id: 10, name: "Видеокарта", unit: "" }],
+};
+
+const PRODUCT_ATTRIBUTES = {
+    1: { 1: "6.7", 2: "256", 3: "8", 4: "48", 5: "4422" },
+    2: { 1: "6.8", 2: "512", 3: "12", 4: "200", 5: "5000" },
+    6: { 1: "6.73", 2: "512", 3: "12", 4: "50", 5: "4880" },
+    3: { 6: "16.2", 7: "Apple M3 Pro", 8: "18", 9: "SSD 512 ГБ", 10: "Интегрированная" },
+    4: { 6: "14", 7: "Intel Core i7-1365U", 8: "16", 9: "SSD 512 ГБ", 10: "Intel Iris Xe" },
+    8: { 6: "16", 7: "Intel Core i9-13980HX", 8: "32", 9: "SSD 1 ТБ", 10: "GeForce RTX 4070" },
+};
+
+const CartContext = createContext();
+const AuthContext = createContext();
+
+function CartProvider({ children }) {
+    const [items, setItems] = useState([]);
+    
+    const addToCart = useCallback((product, quantity = 1) => {
+        setItems(prev => {
+            const existing = prev.find(i => i.id === product.id);
+            if (existing) {
+                return prev.map(i => i.id === product.id ? { ...i, quantity: Math.min(i.quantity + quantity, product.stock) } : i);
+            }
+            return [...prev, { ...product, quantity: Math.min(quantity, product.stock), cartId: Date.now() }];
+        });
+        return true;
+    }, []);
+    
+    const updateQuantity = useCallback((cartId, quantity) => {
+        setItems(prev => prev.map(i => i.cartId === cartId ? { ...i, quantity: Math.max(1, Math.min(quantity, i.stock)) } : i));
+    }, []);
+    
+    const removeItem = useCallback((cartId) => {
+        setItems(prev => prev.filter(i => i.cartId !== cartId));
+    }, []);
+    
+    const clearCart = useCallback(() => setItems([]), []);
+    
+    const total = useMemo(() => items.reduce((s, i) => s + i.price * i.quantity, 0), [items]);
+    const itemCount = useMemo(() => items.reduce((s, i) => s + i.quantity, 0), [items]);
+    
+    return (
+        <CartContext.Provider value={{ items, total, itemCount, addToCart, updateQuantity, removeItem, clearCart }}>
+            {children}
+        </CartContext.Provider>
+    );
+}
+
+function useCart() { return useContext(CartContext); }
+
+function AuthProvider({ children }) {
+    const [user, setUser] = useState(null);
+    const [users, setUsers] = useState(() => {
+        const saved = localStorage.getItem('electroshock_users');
+        if (saved) return JSON.parse(saved);
+        const defaultUsers = [
+            { id: 1, email: "admin@electronics.ru", password: "admin123", first_name: "Администратор", role: "admin" },
+            { id: 2, email: "user@test.ru", password: "user123", first_name: "Иван", role: "customer" },
+        ];
+        localStorage.setItem('electroshock_users', JSON.stringify(defaultUsers));
+        return defaultUsers;
+    });
+    
+    useEffect(() => {
+        const savedUser = localStorage.getItem('electroshock_current_user');
+        if (savedUser) setUser(JSON.parse(savedUser));
+    }, []);
+    
+    const login = useCallback((email, password) => {
+        const found = users.find(u => u.email === email && u.password === password);
+        if (!found) return { error: "Неверный email или пароль" };
+        const userData = { id: found.id, email: found.email, first_name: found.first_name, role: found.role };
+        localStorage.setItem('electroshock_current_user', JSON.stringify(userData));
+        setUser(userData);
+        return { success: true, user: userData };
+    }, [users]);
+    
+    const register = useCallback((data) => {
+        const exists = users.find(u => u.email === data.email);
+        if (exists) return { error: "Пользователь с таким email уже существует" };
+        const newUser = { id: Date.now(), email: data.email, password: data.password, first_name: data.first_name, role: "customer" };
+        const updatedUsers = [...users, newUser];
+        setUsers(updatedUsers);
+        localStorage.setItem('electroshock_users', JSON.stringify(updatedUsers));
+        const userData = { id: newUser.id, email: newUser.email, first_name: newUser.first_name, role: newUser.role };
+        localStorage.setItem('electroshock_current_user', JSON.stringify(userData));
+        setUser(userData);
+        return { success: true, user: userData };
+    }, [users]);
+    
+    const logout = useCallback(() => {
+        localStorage.removeItem('electroshock_current_user');
+        setUser(null);
+    }, []);
+    
+    const updateUser = useCallback((userData) => {
+        localStorage.setItem('electroshock_current_user', JSON.stringify(userData));
+        setUser(userData);
+    }, []);
+    
+    return (
+        <AuthContext.Provider value={{ user, login, register, logout, updateUser }}>
+            {children}
+        </AuthContext.Provider>
+    );
+}
+
+function useAuth() { return useContext(AuthContext); }
+
+function formatPrice(price) {
+    return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
+}
+
+function getCategoryBySlug(slug) {
+    return CATEGORIES.find(c => c.slug === slug) || null;
+}
+
+function getSubcategories(parentId) {
+    return CATEGORIES.filter(c => c.parent_id === parentId);
+}
+
+function getCategoryIds(slug) {
+    const cat = getCategoryBySlug(slug);
+    if (!cat) return [];
+    const subs = getSubcategories(cat.id);
+    return [cat.id, ...subs.map(s => s.id)];
+}
+
+function getProductsByCategory(slug) {
+    const ids = getCategoryIds(slug);
+    return INITIAL_PRODUCTS.filter(p => ids.includes(p.category_id));
+}
+
+function getProductBySlug(slug) {
+    return INITIAL_PRODUCTS.find(p => p.slug === slug) || null;
+}
+
+function getFeaturedProducts() {
+    return INITIAL_PRODUCTS.filter(p => p.is_featured);
+}
+
+function searchProducts(query) {
+    if (!query || query.length < 2) return [];
+    const q = query.toLowerCase();
+    return INITIAL_PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.brand?.toLowerCase().includes(q)).slice(0, 8);
+}
+
+function filterProducts(products, filters) {
+    let result = [...products];
+    if (filters.min_price) result = result.filter(p => p.price >= parseInt(filters.min_price));
+    if (filters.max_price) result = result.filter(p => p.price <= parseInt(filters.max_price));
+    if (filters.brand) {
+        const brands = filters.brand.split(',').map(b => b.trim());
+        result = result.filter(p => brands.includes(p.brand));
+    }
+    return result;
+}
+
+function sortProducts(products, sort) {
+    const result = [...products];
+    if (sort === 'price_asc') result.sort((a, b) => a.price - b.price);
+    else if (sort === 'price_desc') result.sort((a, b) => b.price - a.price);
+    else if (sort === 'name') result.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+    return result;
+}
+
+function useToast() {
+    const [toast, setToast] = useState(null);
+    const showToast = useCallback((message) => {
+        setToast(message);
+        setTimeout(() => setToast(null), 2500);
+    }, []);
+    return { toast, showToast };
+}
+
+
+function Toast({ message }) {
+    if (!message) return null;
+    return <div className="toast-notification">{message}</div>;
+}
+
+function Header({ onNavigate, currentPage, currentParams, showToast }) {
+    const { itemCount } = useCart();
+    const { user, logout } = useAuth();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [showSearch, setShowSearch] = useState(false);
+    const searchRef = useRef(null);
+    
+    useEffect(() => {
+        const handler = (e) => { if (searchRef.current && !searchRef.current.contains(e.target)) setShowSearch(false); };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+    
+    const handleSearch = (e) => {
+        const val = e.target.value;
+        setSearchQuery(val);
+        if (val.length >= 2) {
+            setSearchResults(searchProducts(val));
+            setShowSearch(true);
+        } else {
+            setSearchResults([]);
+            setShowSearch(false);
+        }
+    };
+    
+    const handleResultClick = (slug) => {
+        setSearchQuery('');
+        setSearchResults([]);
+        setShowSearch(false);
+        onNavigate('product', { slug });
+    };
+    
+    return (
+        <nav className="navbar">
+            <div className="container">
+                <a href="#" className="navbar-brand" onClick={e => { e.preventDefault(); onNavigate('home'); }}>
+                    <span className="logo-icon">⚡</span> ElectroShock
+                </a>
+                <div className="search-wrapper" ref={searchRef}>
+                    <input type="search" placeholder="Поиск товаров..." value={searchQuery} onChange={handleSearch} onFocus={() => searchResults.length > 0 && setShowSearch(true)} />
+                    <div className={`search-results ${showSearch ? 'active' : ''}`}>
+                        {searchResults.map(p => (
+                            <div key={p.id} className="search-result-item" onClick={() => handleResultClick(p.slug)}>
+                                <img src={p.main_image} alt={p.name} />
+                                <div>
+                                    <div className="name">{p.name}</div>
+                                    <div className="price">{formatPrice(p.price)}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="nav-actions">
+                    <button className="btn-nav" onClick={() => onNavigate('cart')}>
+                        🛒 Корзина {itemCount > 0 && <span className="badge-counter">{itemCount}</span>}
+                    </button>
+                    {user ? (
+                        <>
+                            <button className="btn-nav" onClick={() => onNavigate('profile')}>👤 {user.first_name || user.email}</button>
+                            {user.role === 'admin' && <button className="btn-nav" onClick={() => onNavigate('admin')}>⚙️ Админ</button>}
+                            <button className="btn-nav" onClick={() => { logout(); onNavigate('home'); }}>Выйти</button>
+                        </>
+                    ) : (
+                        <button className="btn-primary-nav" onClick={() => onNavigate('login')}>Войти</button>
+                    )}
+                </div>
+            </div>
+        </nav>
+    );
+}
+
+function Footer({ onNavigate }) {
+    const mainCategories = CATEGORIES.filter(c => c.parent_id === null);
+    return (
+        <footer>
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-4 mb-3">
+                        <h5 className="text-white">⚡ ElectroShock</h5>
+                        <p className="small">Интернет-магазин электроники и бытовой техники. Широкий ассортимент, низкие цены, быстрая доставка.</p>
+                    </div>
+                    <div className="col-md-2 mb-3">
+                        <h6 className="text-white">Каталог</h6>
+                        {mainCategories.map(c => <a key={c.id} href="#" className="d-block small" onClick={e => { e.preventDefault(); onNavigate('catalog', { slug: c.slug }); }}>{c.name}</a>)}
+                    </div>
+                    <div className="col-md-3 mb-3">
+                        <h6 className="text-white">Покупателям</h6>
+                        <a href="#" className="d-block small" onClick={e => { e.preventDefault(); onNavigate('cart'); }}>Корзина</a>
+                        <a href="#" className="d-block small" onClick={e => { e.preventDefault(); onNavigate('profile'); }}>Личный кабинет</a>
+                    </div>
+                    <div className="col-md-3 mb-3">
+                        <h6 className="text-white">Контакты</h6>
+                        <p className="small mb-1">📞 8 (800) 000-00-00</p>
+                        <p className="small mb-1">📧 info@electroshock.ru</p>
+                        <p className="small">г. Нижний Новгород, ул. Ракетная, д. 2</p>
+                    </div>
+                </div>
+                <hr className="border-secondary" />
+                <p className="text-center small mb-0">© 2026 ElectroShock. Все права защищены.</p>
+            </div>
+        </footer>
+    );
+}
+
+function ProductCardComponent({ product, onNavigate, onAddToCart, showToast }) {
+    const discount = product.old_price ? Math.round((1 - product.price / product.old_price) * 100) : 0;
+    const handleAdd = (e) => {
+        e.stopPropagation();
+        if (product.stock <= 0) {
+            showToast && showToast('Товара нет в наличии');
+            return;
+        }
+        onAddToCart(product, 1);
+        showToast && showToast('Товар добавлен в корзину ✓');
+    };
+    
+    return (
+        <div className="product-card" onClick={() => onNavigate('product', { slug: product.slug })}>
+            <div className="image-wrap">
+                {discount > 0 && <span className="discount-badge">-{discount}%</span>}
+                <img src={product.main_image} alt={product.name} loading="lazy" />
+            </div>
+            <div className="info">
+                {product.brand && <div className="brand">{product.brand}</div>}
+                <div className="name">{product.name}</div>
+                <div className="pricing">
+                    <span className="current-price">{formatPrice(product.price)}</span>
+                    {product.old_price && <span className="old-price">{formatPrice(product.old_price)}</span>}
+                </div>
+                <button className="btn-add" onClick={handleAdd} disabled={product.stock <= 0}>
+                    {product.stock > 0 ? 'В корзину' : 'Нет в наличии'}
+                </button>
+            </div>
+        </div>
+    );
+}
+
+
+function HomePage({ onNavigate, addToCart, showToast }) {
+    const featured = getFeaturedProducts();
+    const mainCategories = CATEGORIES.filter(c => c.parent_id === null);
+    
+    return (
+        <div className="container">
+            <div className="hero text-center">
+                <h1>Добро пожаловать в ElectroShock</h1>
+                <p className="fs-5 mb-3">Лучшая электроника по выгодным ценам с быстрой доставкой</p>
+                <button className="btn btn-light btn-lg" onClick={() => onNavigate('catalog', { slug: 'smartfony' })}>В каталог</button>
+            </div>
+            
+            <div className="section-title">Категории</div>
+            <div className="category-grid">
+                {mainCategories.map(cat => (
+                    <div key={cat.id} className="category-card" onClick={() => onNavigate('catalog', { slug: cat.slug })}>
+                        <span className="icon">{cat.icon}</span>
+                        <span className="label">{cat.name}</span>
+                    </div>
+                ))}
+            </div>
+            
+            <div className="section-title">🔥 Рекомендуемые товары</div>
+            <div className="product-grid">
+                {featured.map(p => (
+                    <ProductCardComponent key={p.id} product={p} onNavigate={onNavigate} onAddToCart={addToCart} showToast={showToast} />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function CatalogPage({ params, onNavigate, addToCart, showToast }) {
+    const slug = params.slug || 'smartfony';
+    const category = getCategoryBySlug(slug);
+    const [sort, setSort] = useState('');
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [brandFilter, setBrandFilter] = useState('');
+    
+    const allProducts = getProductsByCategory(slug);
+    const attrs = ATTRIBUTES[category?.id] || [];
+    
+    const filtered = useMemo(() => {
+        let result = filterProducts(allProducts, { min_price: minPrice, max_price: maxPrice, brand: brandFilter || undefined });
+        result = sortProducts(result, sort);
+        return result;
+    }, [allProducts, sort, minPrice, maxPrice, brandFilter]);
+    
+    const brands = useMemo(() => [...new Set(allProducts.map(p => p.brand).filter(Boolean))], [allProducts]);
+    
+    const resetFilters = () => {
+        setMinPrice('');
+        setMaxPrice('');
+        setBrandFilter('');
+        setSort('');
+    };
+    
+    return (
+        <div className="container">
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><a href="#" onClick={e => { e.preventDefault(); onNavigate('home'); }}>Главная</a></li>
+                    <li className="breadcrumb-item active">{category?.name || slug}</li>
+                </ol>
+            </nav>
+            <h2>{category?.name || slug}</h2>
+            <div className="catalog-layout mt-3">
+                <div className="filter-sidebar">
+                    <h5>Фильтры</h5>
+                    <div className="filter-group">
+                        <label>Цена</label>
+                        <div className="price-inputs">
+                            <input type="number" placeholder="От" value={minPrice} onChange={e => setMinPrice(e.target.value)} />
+                            <input type="number" placeholder="До" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} />
+                        </div>
+                    </div>
+                    {brands.length > 0 && (
+                        <div className="filter-group">
+                            <label>Бренд</label>
+                            <select value={brandFilter} onChange={e => setBrandFilter(e.target.value)}>
+                                <option value="">Все бренды</option>
+                                {brands.map(b => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                        </div>
+                    )}
+                    {attrs.map(attr => (
+                        <div className="filter-group" key={attr.id}>
+                            <label>{attr.name}{attr.unit ? `, ${attr.unit}` : ''}</label>
+                            <select>
+                                <option value="">Все</option>
+                                {/* В реальном приложении здесь динамические значения */}
+                            </select>
+                        </div>
+                    ))}
+                    <button className="btn-reset" onClick={resetFilters}>Сбросить фильтры</button>
+                </div>
+                <div className="catalog-content">
+                    <div className="catalog-header">
+                        <span className="count">Найдено товаров: {filtered.length}</span>
+                        <select value={sort} onChange={e => setSort(e.target.value)}>
+                            <option value="">По умолчанию</option>
+                            <option value="price_asc">Сначала дешёвые</option>
+                            <option value="price_desc">Сначала дорогие</option>
+                            <option value="name">По названию</option>
+                        </select>
+                    </div>
+                    {filtered.length > 0 ? (
+                        <div className="catalog-grid">
+                            {filtered.map(p => (
+                                <ProductCardComponent key={p.id} product={p} onNavigate={onNavigate} onAddToCart={addToCart} showToast={showToast} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-5 text-muted">
+                            <h5>Товары не найдены</h5>
+                            <p>Попробуйте изменить параметры фильтрации</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ProductPage({ params, onNavigate, addToCart, showToast }) {
+    const product = getProductBySlug(params.slug);
+    const [activeTab, setActiveTab] = useState('specs');
+    
+    if (!product) {
+        return (
+            <div className="container py-5 text-center">
+                <h3>Товар не найден</h3>
+                <button className="btn btn-primary-nav" onClick={() => onNavigate('home')}>На главную</button>
+            </div>
+        );
+    }
+    
+    const discount = product.old_price ? Math.round((1 - product.price / product.old_price) * 100) : 0;
+    const attrs = PRODUCT_ATTRIBUTES[product.id] || {};
+    const attrDefs = ATTRIBUTES[product.category_id] || [];
+    const similarProducts = INITIAL_PRODUCTS.filter(p => p.category_id === product.category_id && p.id !== product.id).slice(0, 4);
+    
+    const handleAdd = () => {
+        if (product.stock <= 0) {
+            showToast('Товара нет в наличии');
+            return;
+        }
+        addToCart(product, 1);
+        showToast('Товар добавлен в корзину ✓');
+    };
+    
+    return (
+        <div className="container">
+            <nav aria-label="breadcrumb" className="mt-3">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><a href="#" onClick={e => { e.preventDefault(); onNavigate('home'); }}>Главная</a></li>
+                    <li className="breadcrumb-item active">{product.name}</li>
+                </ol>
+            </nav>
+            <div className="product-detail">
+                <div className="gallery">
+                    <img src={product.main_image} alt={product.name} />
+                </div>
+                <div>
+                    <h1>{product.name}</h1>
+                    <div className="brand-detail">Бренд: {product.brand}</div>
+                    <div className="d-flex align-items-center gap-3 my-3">
+                        <span className="price-detail">{formatPrice(product.price)}</span>
+                        {product.old_price && (
+                            <>
+                                <span className="old-price-detail">{formatPrice(product.old_price)}</span>
+                                <span className="badge bg-danger">-{discount}%</span>
+                            </>
+                        )}
+                    </div>
+                    <div className={`stock-status ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
+                        {product.stock > 0 ? `✅ В наличии: ${product.stock} шт.` : '❌ Нет в наличии'}
+                    </div>
+                    <button className="btn-add-lg mt-3" onClick={handleAdd} disabled={product.stock <= 0}>
+                        В корзину
+                    </button>
+                </div>
+            </div>
+            
+            <div className="tabs">
+                <button className={activeTab === 'specs' ? 'active' : ''} onClick={() => setActiveTab('specs')}>Характеристики</button>
+                <button className={activeTab === 'desc' ? 'active' : ''} onClick={() => setActiveTab('desc')}>Описание</button>
+            </div>
+            <div className="tab-content">
+                {activeTab === 'specs' && (
+                    <table className="specs-table">
+                        <tbody>
+                            {attrDefs.map(attr => {
+                                const value = attrs[attr.id];
+                                if (!value) return null;
+                                return (
+                                    <tr key={attr.id}>
+                                        <td>{attr.name}</td>
+                                        <td>{value} {attr.unit}</td>
+                                    </tr>
+                                );
+                            })}
+                            {Object.keys(attrs).length === 0 && <tr><td colSpan="2" className="text-muted">Характеристики не указаны</td></tr>}
+                        </tbody>
+                    </table>
+                )}
+                {activeTab === 'desc' && <p>{product.description}</p>}
+            </div>
+            
+            {similarProducts.length > 0 && (
+                <>
+                    <div className="section-title mt-4">Похожие товары</div>
+                    <div className="product-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                        {similarProducts.map(p => (
+                            <ProductCardComponent key={p.id} product={p} onNavigate={onNavigate} onAddToCart={addToCart} showToast={showToast} />
+                        ))}
+                    </div>
+                </>
+            )}
+        </div>
+    );
+}
+
+function CartPage({ onNavigate, showToast }) {
+    const { items, total, updateQuantity, removeItem, clearCart } = useCart();
+    const { user } = useAuth();
+    
+    if (items.length === 0) {
+        return (
+            <div className="container py-5 text-center">
+                <h3>Корзина пуста</h3>
+                <p className="text-muted">Перейдите в каталог для выбора товаров</p>
+                <button className="btn btn-primary-nav" onClick={() => onNavigate('catalog', { slug: 'smartfony' })}>В каталог</button>
+            </div>
+        );
+    }
+    
+    return (
+        <div className="container" style={{ maxWidth: 900 }}>
+            <h2 className="mt-4">Корзина</h2>
+            {items.map(item => (
+                <div className="cart-item" key={item.cartId}>
+                    <img src={item.main_image} alt={item.name} />
+                    <div className="item-info">
+                        <a href="#" className="item-name text-decoration-none text-dark" onClick={e => { e.preventDefault(); onNavigate('product', { slug: item.slug }); }}>{item.name}</a>
+                        <div className="item-price">{formatPrice(item.price)} за шт.</div>
+                    </div>
+                    <div className="qty-control">
+                        <button onClick={() => updateQuantity(item.cartId, item.quantity - 1)}>−</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.cartId, item.quantity + 1)}>+</button>
+                    </div>
+                    <div className="item-total">{formatPrice(item.price * item.quantity)}</div>
+                    <button className="btn-remove" onClick={() => removeItem(item.cartId)}>✕</button>
+                </div>
+            ))}
+            <div className="cart-summary">
+                <h3>Итого: <span className="total-price">{formatPrice(total)}</span></h3>
+                {user ? (
+                    <button className="btn-submit-order mt-2" onClick={() => {
+                        clearCart();
+                        showToast('🎉 Заказ успешно оформлен!');
+                        onNavigate('profile');
+                    }}>Оформить заказ</button>
+                ) : (
+                    <div className="mt-2">
+                        <p className="text-muted">Для оформления заказа необходимо войти</p>
+                        <button className="btn-primary-nav" onClick={() => onNavigate('login')}>Войти</button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function ProfilePage({ onNavigate }) {
+    const { user, logout } = useAuth();
+    
+    if (!user) {
+        return (
+            <div className="container py-5 text-center">
+                <h3>Войдите для просмотра профиля</h3>
+                <button className="btn btn-primary-nav" onClick={() => onNavigate('login')}>Войти</button>
+            </div>
+        );
+    }
+    
+    return (
+        <div className="container" style={{ maxWidth: 700 }}>
+            <h2 className="mt-4">Личный кабинет</h2>
+            <div className="order-form">
+                <p><strong>Имя:</strong> {user.first_name || '—'}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Роль:</strong> {user.role === 'admin' ? 'Администратор' : 'Покупатель'}</p>
+            </div>
+            <div className="cart-summary mt-3">
+                <p className="text-muted">История заказов будет отображаться здесь после оформления заказов.</p>
+            </div>
+        </div>
+    );
+}
+
+function LoginPage({ onNavigate, showToast }) {
+    const { login, register } = useAuth();
+    const [isRegister, setIsRegister] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [error, setError] = useState('');
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setError('');
+        let result;
+        if (isRegister) {
+            result = register({ email, password, first_name: firstName });
+        } else {
+            result = login(email, password);
+        }
+        if (result.error) {
+            setError(result.error);
+        } else {
+            showToast(isRegister ? 'Регистрация успешна!' : 'Вход выполнен!');
+            onNavigate('home');
+        }
+    };
+    
+    return (
+        <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onNavigate('home'); }}>
+            <div className="modal-dialog">
+                <h3>{isRegister ? 'Регистрация' : 'Вход'}</h3>
+                {error && <div className="alert alert-danger py-2">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    {isRegister && (
+                        <input type="text" placeholder="Имя" value={firstName} onChange={e => setFirstName(e.target.value)} required />
+                    )}
+                    <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
+                    <input type="password" placeholder="Пароль" value={password} onChange={e => setPassword(e.target.value)} required />
+                    <button type="submit" className="btn-full primary mb-2">{isRegister ? 'Зарегистрироваться' : 'Войти'}</button>
+                </form>
+                <p className="text-center mb-0">
+                    {isRegister ? 'Уже есть аккаунт?' : 'Нет аккаунта?'}{' '}
+                    <a href="#" onClick={e => { e.preventDefault(); setIsRegister(!isRegister); setError(''); }}>
+                        {isRegister ? 'Войти' : 'Зарегистрироваться'}
+                    </a>
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function AdminPage({ onNavigate }) {
+    const { user } = useAuth();
+    const [activeTab, setActiveTab] = useState('products');
+    const [products, setProducts] = useState(INITIAL_PRODUCTS);
+    const [orders, setOrders] = useState(() => {
+        const saved = localStorage.getItem('electroshock_orders');
+        return saved ? JSON.parse(saved) : [];
+    });
+    
+    const statusLabels = {
+        pending: 'Ожидает',
+        processing: 'В обработке',
+        shipped: 'Отправлен',
+        completed: 'Выполнен',
+        cancelled: 'Отменён'
+    };
+    
+    const updateOrderStatus = (orderId, status) => {
+        const updated = orders.map(o => o.id === orderId ? { ...o, status } : o);
+        setOrders(updated);
+        localStorage.setItem('electroshock_orders', JSON.stringify(updated));
+    };
+    
+    if (!user || user.role !== 'admin') {
+        return (
+            <div className="container py-5 text-center">
+                <h3>Доступ запрещён</h3>
+                <button className="btn btn-primary-nav" onClick={() => onNavigate('home')}>На главную</button>
+            </div>
+        );
+    }
+    
+    return (
+        <div className="container">
+            <h2 className="mt-4">Административная панель</h2>
+            <div className="tabs">
+                <button className={activeTab === 'products' ? 'active' : ''} onClick={() => setActiveTab('products')}>Товары ({products.length})</button>
+                <button className={activeTab === 'orders' ? 'active' : ''} onClick={() => setActiveTab('orders')}>Заказы ({orders.length})</button>
+            </div>
+            <div className="tab-content">
+                {activeTab === 'products' && (
+                    <div className="admin-table">
+                        <table>
+                            <thead><tr><th>ID</th><th>Название</th><th>Бренд</th><th>Цена</th><th>Склад</th></tr></thead>
+                            <tbody>
+                                {products.map(p => (
+                                    <tr key={p.id}>
+                                        <td>{p.id}</td>
+                                        <td>{p.name}</td>
+                                        <td>{p.brand}</td>
+                                        <td><strong>{formatPrice(p.price)}</strong></td>
+                                        <td>{p.stock} шт.</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+                {activeTab === 'orders' && (
+                    <div className="admin-table">
+                        {orders.length === 0 ? (
+                            <p className="text-muted p-3">Заказов пока нет</p>
+                        ) : (
+                            <table>
+                                <thead><tr><th>ID</th><th>Клиент</th><th>Сумма</th><th>Статус</th><th>Действия</th></tr></thead>
+                                <tbody>
+                                    {orders.map(order => (
+                                        <tr key={order.id}>
+                                            <td>{order.id}</td>
+                                            <td>{order.customer_name}<br /><small className="text-muted">{order.customer_email}</small></td>
+                                            <td><strong>{formatPrice(order.total_amount)}</strong></td>
+                                            <td><span className={`status-badge status-${order.status}`}>{statusLabels[order.status] || order.status}</span></td>
+                                            <td>
+                                                <select value={order.status} onChange={e => updateOrderStatus(order.id, e.target.value)} style={{ borderRadius: 8, padding: '4px 8px', fontSize: '0.85rem' }}>
+                                                    {Object.entries(statusLabels).map(([val, label]) => (
+                                                        <option key={val} value={val}>{label}</option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function App() {
+    const [currentPage, setCurrentPage] = useState('home');
+    const [currentParams, setCurrentParams] = useState({});
+    const { toast, showToast } = useToast();
+    const { addToCart } = useCart();
+    
+    const navigate = useCallback((page, params = {}) => {
+        setCurrentPage(page);
+        setCurrentParams(params);
+        window.scrollTo(0, 0);
+    }, []);
+    
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = window.location.hash.replace('#', '');
+            if (!hash) { navigate('home'); return; }
+            const parts = hash.split('/');
+            if (parts[0] === 'catalog' && parts[1]) navigate('catalog', { slug: parts[1] });
+            else if (parts[0] === 'product' && parts[1]) navigate('product', { slug: parts[1] });
+            else if (parts[0] === 'cart') navigate('cart');
+            else if (parts[0] === 'login') navigate('login');
+            else if (parts[0] === 'profile') navigate('profile');
+            else if (parts[0] === 'admin') navigate('admin');
+            else navigate('home');
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        handleHashChange();
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, [navigate]);
+    
+    useEffect(() => {
+        const hash = currentPage === 'home' ? '' :
+            currentPage === 'catalog' ? `#catalog/${currentParams.slug || ''}` :
+            currentPage === 'product' ? `#product/${currentParams.slug || ''}` :
+            `#${currentPage}`;
+        if (window.location.hash !== hash) {
+            window.history.pushState(null, '', hash || window.location.pathname);
+        }
+    }, [currentPage, currentParams]);
+    
+    const renderPage = () => {
+        switch (currentPage) {
+            case 'home': return <HomePage onNavigate={navigate} addToCart={addToCart} showToast={showToast} />;
+            case 'catalog': return <CatalogPage params={currentParams} onNavigate={navigate} addToCart={addToCart} showToast={showToast} />;
+            case 'product': return <ProductPage params={currentParams} onNavigate={navigate} addToCart={addToCart} showToast={showToast} />;
+            case 'cart': return <CartPage onNavigate={navigate} showToast={showToast} />;
+            case 'login': return <LoginPage onNavigate={navigate} showToast={showToast} />;
+            case 'profile': return <ProfilePage onNavigate={navigate} />;
+            case 'admin': return <AdminPage onNavigate={navigate} />;
+            default: return <HomePage onNavigate={navigate} addToCart={addToCart} showToast={showToast} />;
+        }
+    };
+    
+    return (
+        <>
+            <Header onNavigate={navigate} currentPage={currentPage} currentParams={currentParams} showToast={showToast} />
+            <main style={{ minHeight: '60vh' }}>
+                {renderPage()}
+            </main>
+            <Footer onNavigate={navigate} />
+            <Toast message={toast} />
+        </>
+    );
+}
+
+// ЗАПУСК
+function Root() {
+    return (
+        <AuthProvider>
+            <CartProvider>
+                <App />
+            </CartProvider>
+        </AuthProvider>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<Root />);
+</script>
+
+</body>
+</html>
